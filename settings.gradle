@@ -1,2 +1,3 @@
 rootProject.name = 'Lightmessage'
+include('client')
 
