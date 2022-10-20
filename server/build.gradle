@@ -23,7 +23,7 @@ test {
 jar {
     manifest {
         attributes(
-                'Main-Class': 'net.lightmessage.client.Main'
+                'Main-Class': 'net.lightmessage.server.Main'
         )
     }
     from {
