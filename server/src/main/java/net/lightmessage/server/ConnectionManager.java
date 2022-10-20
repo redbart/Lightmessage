@@ -3,6 +3,7 @@ package net.lightmessage.server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ConnectionManager extends Thread {
@@ -20,8 +21,7 @@ public class ConnectionManager extends Thread {
         try {
             serverSocket = new ServerSocket(port);
         } catch (IOException e) {
-            LOGGER.severe("Server socket creation failure");
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Server socket creation failure", e);
             return;
         }
 
@@ -30,9 +30,10 @@ public class ConnectionManager extends Thread {
                 Socket newClient = serverSocket.accept();
 
                 LOGGER.info("New client " + newClient.getInetAddress().toString());
+
+                new Connection(newClient).start();
             } catch (IOException e) {
-                LOGGER.warning("Client accept failure");
-                e.printStackTrace();
+                LOGGER.log(Level.WARNING, "Client accept failure", e);
             }
         }
     }
