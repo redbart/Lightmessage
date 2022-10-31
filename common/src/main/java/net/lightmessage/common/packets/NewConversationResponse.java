@@ -1,29 +1,20 @@
 package net.lightmessage.common.packets;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.Objects;
 
-public class SendMessageRequest extends Packet {
-    public static final int ID = 0;
+public class NewConversationResponse extends Packet {
+    public static final int ID = 3;
 
-    private String text;
     private int conversationId;
 
-    public SendMessageRequest(String message, int conversation) {
-        this.text = message;
-        this.conversationId = conversation;
+    public NewConversationResponse() {
     }
 
-    SendMessageRequest() {
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
+    public NewConversationResponse(int conversationId) {
+        this.conversationId = conversationId;
     }
 
     public int getConversationId() {
@@ -37,8 +28,6 @@ public class SendMessageRequest extends Packet {
     @Override
     Packet read(DataInputStream inputStream) throws IOException {
         conversationId = inputStream.readInt();
-        int textLength = inputStream.readInt();
-        text = new String(inputStream.readNBytes(textLength));
         int hashCode = inputStream.readInt();
         if (hashCode != hashCode()) {
             throw new IOException("Non-matching hash value when reading packet");
@@ -51,30 +40,26 @@ public class SendMessageRequest extends Packet {
         outputStream.writeInt(Packet.MAGIC_BYTES);
         outputStream.writeInt(ID);
         outputStream.writeInt(conversationId);
-        outputStream.writeInt(text.length());
-        outputStream.write(text.getBytes(StandardCharsets.UTF_8));
         outputStream.writeInt(hashCode());
-        outputStream.flush();
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        SendMessageRequest that = (SendMessageRequest) o;
-        return conversationId == that.conversationId && Objects.equals(text, that.text);
+        NewConversationResponse that = (NewConversationResponse) o;
+        return conversationId == that.conversationId;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(text, conversationId);
+        return Objects.hash(conversationId);
     }
 
     @Override
     public String toString() {
-        return "SendMessageRequest{" +
-                "message='" + text + '\'' +
-                ", conversation=" + conversationId +
+        return "NewConversationResponse{" +
+                "conversationId=" + conversationId +
                 '}';
     }
 }

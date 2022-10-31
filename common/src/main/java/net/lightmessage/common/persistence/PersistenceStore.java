@@ -16,9 +16,14 @@ public class PersistenceStore {
         return conversations.get(conversationId);
     }
 
+    public ArrayList<Conversation> getConversationsByUserId(int userId) {
+        // TODO THIS IS PLACEHOLDER CODE PLEASE UPDATE IT WHEN A USER SYSTEM IS INTRODUCED
+        return conversations;
+    }
+
     public void addMessage(Message message) {
         Message messageCopy = new Message(message);
-        ArrayList<Message> conversationMessageList = messagesIndexedByConversationIdSequenced.get(message.conversationId);
+        ArrayList<Message> conversationMessageList = messagesIndexedByConversationIdSequenced.get(messageCopy.conversationId);
 
         messageCopy.sequenceId = conversationMessageList.size();
         messageCopy.universalId = messages.size();
