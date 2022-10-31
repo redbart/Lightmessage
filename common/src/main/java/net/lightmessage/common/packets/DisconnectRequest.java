@@ -1,8 +1,6 @@
 package net.lightmessage.common.packets;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 
 public class DisconnectRequest extends Packet {
     public static final int ID = 1;
@@ -11,12 +9,13 @@ public class DisconnectRequest extends Packet {
     }
 
     @Override
-    Packet read(ObjectInputStream inputStream) throws IOException {
+    Packet read(DataInputStream inputStream) throws IOException {
         return this;
     }
 
     @Override
-    public void write(ObjectOutputStream outputStream) throws IOException {
+    public void write(DataOutputStream outputStream) throws IOException {
+        outputStream.writeInt(Packet.MAGIC_BYTES);
         outputStream.writeInt(ID);
         outputStream.flush();
     }

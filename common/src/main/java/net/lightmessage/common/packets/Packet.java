@@ -3,11 +3,17 @@ package net.lightmessage.common.packets;
 import java.io.*;
 
 public abstract class Packet {
-    abstract Packet read(ObjectInputStream inputStream) throws IOException;
+    public static final int MAGIC_BYTES = 0x4c6d7367;
 
-    public abstract void write(ObjectOutputStream outputStream) throws IOException;
+    abstract Packet read(DataInputStream inputStream) throws IOException;
 
-    public static Packet readPacket(ObjectInputStream inputStream) throws IOException {
+    public abstract void write(DataOutputStream outputStream) throws IOException;
+
+    public static Packet readPacket(DataInputStream inputStream) throws IOException {
+        int magic = inputStream.readInt();
+        if (magic != MAGIC_BYTES) {
+            throw new IOException("Failed to read packet: Invalid magic bytes");
+        }
         int packetID = inputStream.readInt();
 
         switch (packetID) {
@@ -16,6 +22,6 @@ public abstract class Packet {
             case DisconnectRequest.ID:
                 return new DisconnectRequest().read(inputStream);
         }
-        throw new IOException("Failed to read packet");
+        throw new IOException("Failed to read packet: Invalid packet ID");
     }
 }

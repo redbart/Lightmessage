@@ -35,7 +35,7 @@ public class SendMessageRequest extends Packet {
     }
 
     @Override
-    Packet read(ObjectInputStream inputStream) throws IOException {
+    Packet read(DataInputStream inputStream) throws IOException {
         conversation = inputStream.readInt();
         int messageLength = inputStream.readInt();
         message = new String(inputStream.readNBytes(messageLength));
@@ -47,7 +47,8 @@ public class SendMessageRequest extends Packet {
     }
 
     @Override
-    public void write(ObjectOutputStream outputStream) throws IOException {
+    public void write(DataOutputStream outputStream) throws IOException {
+        outputStream.writeInt(Packet.MAGIC_BYTES);
         outputStream.writeInt(ID);
         outputStream.writeInt(conversation);
         outputStream.writeInt(message.length());

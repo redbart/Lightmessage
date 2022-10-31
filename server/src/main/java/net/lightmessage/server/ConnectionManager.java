@@ -1,5 +1,7 @@
 package net.lightmessage.server;
 
+import net.lightmessage.common.persistence.PersistenceStore;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -10,9 +12,11 @@ public class ConnectionManager extends Thread {
     private static final Logger LOGGER = Logger.getLogger(ConnectionManager.class.getName());
 
     private final int port;
+    private final PersistenceStore persistenceStore;
 
-    public ConnectionManager(int port) {
+    public ConnectionManager(int port, PersistenceStore persistenceStore) {
         this.port = port;
+        this.persistenceStore = persistenceStore;
     }
 
     @Override
@@ -31,7 +35,7 @@ public class ConnectionManager extends Thread {
 
                 LOGGER.info("New client " + newClient.getInetAddress().toString());
 
-                new Connection(newClient).start();
+                new Connection(newClient, persistenceStore).start();
             } catch (IOException e) {
                 LOGGER.log(Level.WARNING, "Client accept failure", e);
             }
