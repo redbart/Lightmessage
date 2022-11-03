@@ -17,4 +17,20 @@ public class Message {
     int sequenceId;
 
     String text;
+
+    public int getUniversalId() {
+        return universalId;
+    }
+
+    public int getConversationId() {
+        return conversationId;
+    }
+
+    public int getSequenceId() {
+        return sequenceId;
+    }
+
+    public String getText() {
+        return text;
+    }
 }

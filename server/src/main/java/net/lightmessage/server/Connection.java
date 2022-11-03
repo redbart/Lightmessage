@@ -62,12 +62,16 @@ public class Connection extends Thread {
                         if (!conversationStatuses.containsKey(conversation.getConversationId())) {
                             //New conversation response
 
+                            new NewConversationResponse(conversation.getConversationId()).write(outputStream);
+
                             conversationStatuses.put(conversation.getConversationId(), -1);
                         }
 
                         ArrayList<Message> messages = persistenceStore.getSequencedMessagesByConversationId(conversation.getConversationId());
                         for (int i = conversationStatuses.get(conversation.getConversationId()) + 1; i < messages.size(); i++) {
                             //New message response
+
+                            new NewMessageResponse(i,messages.get(i).getConversationId(),messages.get(i).getSequenceId(),messages.get(i).getText()).write(outputStream);
 
                             conversationStatuses.put(conversation.getConversationId(), i);
                         }

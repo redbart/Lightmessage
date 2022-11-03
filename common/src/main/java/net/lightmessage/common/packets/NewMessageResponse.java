@@ -49,6 +49,7 @@ public class NewMessageResponse extends Packet{
         outputStream.writeInt(sequenceId);
         outputStream.writeInt(text.length());
         outputStream.write(text.getBytes(StandardCharsets.UTF_8));
+        outputStream.writeInt(hashCode());
     }
 
     @Override

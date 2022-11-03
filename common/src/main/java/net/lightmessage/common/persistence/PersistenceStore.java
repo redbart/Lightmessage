@@ -4,9 +4,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class PersistenceStore {
-    ArrayList<Conversation> conversations;
-    ArrayList<Message> messages;
-    HashMap<Integer, ArrayList<Message>> messagesIndexedByConversationIdSequenced;
+    ArrayList<Conversation> conversations = new ArrayList<>();
+    ArrayList<Message> messages = new ArrayList<>();
+    HashMap<Integer, ArrayList<Message>> messagesIndexedByConversationIdSequenced = new HashMap<>();
+
+    public PersistenceStore() {
+        conversations.add(new Conversation(0));
+
+        Message message1 = new Message(0, "Message1");
+        messages.add(message1);
+        messagesIndexedByConversationIdSequenced.put(0, new ArrayList<>());
+        messagesIndexedByConversationIdSequenced.get(0).add(message1);
+    }
 
     public ArrayList<Message> getSequencedMessagesByConversationId(int conversationId) {
         return messagesIndexedByConversationIdSequenced.get(conversationId);
@@ -21,7 +30,7 @@ public class PersistenceStore {
         return conversations;
     }
 
-    public void addMessage(Message message) {
+    public Message addMessage(Message message) {
         Message messageCopy = new Message(message);
         ArrayList<Message> conversationMessageList = messagesIndexedByConversationIdSequenced.get(messageCopy.conversationId);
 
@@ -30,5 +39,6 @@ public class PersistenceStore {
 
         messages.add(messageCopy);
         conversationMessageList.add(messageCopy);
+        return messageCopy;
     }
 }
