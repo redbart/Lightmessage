@@ -27,6 +27,8 @@ public abstract class Packet {
                 return new NewMessageResponse().read(inputStream);
             case NewConversationResponse.ID:
                 return new NewConversationResponse().read(inputStream);
+            case LoginRequest.ID:
+                return new LoginRequest().read(inputStream);
 
         }
         throw new IOException("Failed to read packet: Invalid packet ID");

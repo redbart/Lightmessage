@@ -38,7 +38,7 @@ public class SendMessageRequest extends Packet {
     Packet read(DataInputStream inputStream) throws IOException {
         conversationId = inputStream.readInt();
         int textLength = inputStream.readInt();
-        text = new String(inputStream.readNBytes(textLength));
+        text = new String(inputStream.readNBytes(textLength), StandardCharsets.UTF_8);
         int hashCode = inputStream.readInt();
         if (hashCode != hashCode()) {
             throw new IOException("Non-matching hash value when reading packet");

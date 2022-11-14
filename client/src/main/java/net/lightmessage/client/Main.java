@@ -17,6 +17,7 @@ public class Main {
             Socket socket = new Socket("127.0.0.1", 5432);
             DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
             DataInputStream inputStream = new DataInputStream(socket.getInputStream());
+            new LoginRequest("userA","passwordA").write(outputStream);
             new SendMessageRequest("test message", 0).write(outputStream);
             new ConversationUpdateRequest(new ConversationStatus[]{}).write(outputStream);
             while(true){

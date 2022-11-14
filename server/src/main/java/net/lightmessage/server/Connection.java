@@ -4,6 +4,7 @@ import net.lightmessage.common.packets.*;
 import net.lightmessage.common.persistence.Conversation;
 import net.lightmessage.common.persistence.Message;
 import net.lightmessage.common.persistence.PersistenceStore;
+import net.lightmessage.common.persistence.User;
 
 import java.io.*;
 import java.net.Socket;
@@ -36,7 +37,9 @@ public class Connection extends Thread {
         }
 
         HashMap<Integer, Integer> conversationStatuses = new HashMap<>();
+        User authenticatedUser = null;
 
+        //Infinite loop stops on DisconnectRequest or error
         while (true) {
             try {
                 Packet packet = Packet.readPacket(inputStream);
@@ -57,8 +60,8 @@ public class Connection extends Thread {
                         conversationStatuses.put(conversationStatus.conversationId(), conversationStatus.sequenceId());
                     }
 
-                    //TODO PLEASE FUTURE LEO UPDATE THIS HARDCODED USER ID 0
-                    for (Conversation conversation : persistenceStore.getConversationsByUserId(0)) {
+                    //TODO more error handling
+                    for (Conversation conversation : persistenceStore.getConversationsByUsername(authenticatedUser.getUsername())) {
                         if (!conversationStatuses.containsKey(conversation.getConversationId())) {
                             //New conversation response
 
@@ -71,12 +74,15 @@ public class Connection extends Thread {
                         for (int i = conversationStatuses.get(conversation.getConversationId()) + 1; i < messages.size(); i++) {
                             //New message response
 
-                            new NewMessageResponse(i,messages.get(i).getConversationId(),messages.get(i).getSequenceId(),messages.get(i).getText()).write(outputStream);
+                            new NewMessageResponse(i, messages.get(i).getConversationId(), messages.get(i).getSequenceId(), messages.get(i).getText()).write(outputStream);
 
                             conversationStatuses.put(conversation.getConversationId(), i);
                         }
                     }
+                } else if (packet instanceof LoginRequest loginRequest) {
+                    LOGGER.info("LoginRequest packet: " + loginRequest);
 
+                    authenticatedUser = persistenceStore.getUser(loginRequest.getUsername());
                 } else {
                     LOGGER.warning("UNKNOWN packet: " + packet);
                 }
