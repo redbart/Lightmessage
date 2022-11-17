@@ -86,6 +86,7 @@ public class Connection extends Thread {
                 } else {
                     LOGGER.warning("UNKNOWN packet: " + packet);
                 }
+                new EndResponse().write(outputStream);
             } catch (IOException e) {
                 LOGGER.log(Level.SEVERE, "Packet read failure", e);
                 return;
